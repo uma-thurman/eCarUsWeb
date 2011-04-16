@@ -2,8 +2,11 @@ class Widget
     constructor: () ->
         @root = document.createElement("div")
         @root.style.position = "absolute"
-        document.append(@root)
+        document.documentElement.appendChild(@root)
         
+    createCanvas: () ->
+        @canvas = document.createElement("canvas")
+        @root.appendChild(@canvas)
 
     resize: () ->
         @redraw()
@@ -14,16 +17,28 @@ class Widget
 
 class Map extends Widget
     constructor: () ->
+        super()
         @displayedObjects = []
         @shoudUpdate = true
-        @hasCanvas = true
-
+        @createCanvas()
     redraw: () ->
-        draw(obj) for obj in @displayedObjects
+        this.draw(obj) for obj in @displayedObjects
 
     draw: (aLandmark) ->
-        x = unproject(aLandmark.x)
-        y = unproject(aLandmark.y)
+        context = @canvas.getContext("2d")
+        x = @unproject(aLandmark.x)
+        y = @unproject(aLandmark.y)
 
         representation = aLandmark.representation
-        @canvas.image x,y,representation
+        context.fillStyle = "rgb(200,0,0)"
+        context.fillRect( x,y, 10,10) #representation
+    unproject: (x) ->
+        x
+
+myMap = new Map()
+lm = 
+     x: 200 
+     y: 10
+     representation: new Image()
+myMap.displayedObjects.push(lm)
+myMap.redraw()
